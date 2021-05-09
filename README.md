@@ -204,4 +204,43 @@ like to put names on employees if I can and it doesn't take much time.
 To insert clock times, we execute *include_clock_times.sql*.  This one is more involved than 
 Employees. First, we get just the date for any given row, with the output being add_clock_date 
 temp table.  This table is pulled and we partition by the employee_id and the date. This gives 
-us up to 6 rows per person per day, ordered by clock_date
+us up to 6 rows per person per day, ordered by clock_time.  This way, we have the ordering per 
+employee per date.  Even numbers must be clock-ins and odd numbers must be clock-outs due to 
+the stipulation that people can never leave the floor without clocking out.
+
+Next, we insert the into a "clock_ins" table, which is similar to a warehouse table.  It 
+contains employee_id, report_date, clock_in_number, and clock_time.  The primary key is 
+employee_id, report_date, and clock_in_number. This verifies that for a given employee/date 
+that they only ever have one clock in / out for a given order.  Left joining to the table on 
+this primary key and specifying where it is null results in us inserting only new records.  
+Note that this is not an upsert. This assumes that the clock ins will never change. If that 
+were the case, we'd have to employ eitehr a slowly changing dimension to this, where we stored 
+what a set of time stamps looked like at a given point in time OR by updating the table with 
+more recent data, losing the old - presumably incorrect - data in the process.
+
+Next, we apply the in/out rules. As noted, by definition cloks 1,3, and 5 must be clock-ins and 
+clocks 2,4, and 6 must be clock outs.  We convert this to an "epoch", the number of seconds 
+since 1970. Then, we subtract these to give us the delta in seconds in *add_floor_time_seconds* 
+temp table.
+
+To get the start/end times for a particular date, we aggregate the min/max clock_time per 
+employee per report date and store it in temp table start_end_times.  
+
+Finally, we join everything together by getting the distinct days that exist and left joining 
+the aggregate_floor_time and the start_end_times from above, giving us the start/end time per 
+day per employee and the total_floor_time per day per employee in the same table.  This is then 
+placed in the employee_daily_report. As with above, this assumes that these data will never 
+change once they have been inserted.  An upsert or slowly changing dimension would be slightly 
+more difficult though could meet that requirement if it ever needed to be updatable.
+
+Note that this format is slightly different than the one stipulated in the prompt. This is 
+because the prompt is likely talking about a single day, rather than a years worth of data.  In 
+a real-world application, it would make sense to have the day that an event pertains to in this 
+table, so I included it. If, for some reason, this was unacceptable, creating a view that 
+removed this column or generating a single table / report that was on a per-day basis would be 
+trivial.
+
+### Reporting
+While it was not asked, I typically include some basic reporting the first time that I pull 
+data in.  While this is a bit of a contrived example with randomly generated data,
+
