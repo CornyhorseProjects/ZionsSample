@@ -15,7 +15,7 @@ create temp  table add_clock_date_row_number as
 select employee_id
      , clock_date
      , clock_time
-     , row_number() over (partition by employee_id, clock_date order by employee_id, clock_date)
+     , row_number() over (partition by employee_id, clock_date order by employee_id, clock_time)
       as employee_clock_date_order
 from add_clock_date
 order by employee_id, clock_date, clock_time;
