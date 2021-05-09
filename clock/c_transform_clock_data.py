@@ -8,7 +8,8 @@ from clock.clock_models import execute_sql_file
 
 class Transform:
     """
-
+    The transform class is takes data that we imported from the CSV and inserts it into the
+    destination tables.
     """
     def __init__(self, engine, session):
         self.engine = engine
@@ -16,8 +17,10 @@ class Transform:
 
     def execute(self):
         """
+        This will be the only method that an end-user would realistically call. It ties all of
+        the parts of this pipe into the same method as a convenience.
 
-        :return:
+        :return: None
         """
         self.import_employees()
         self.import_clock_times()
@@ -67,9 +70,9 @@ class Transform:
 
 def main():
     """
+    This function is included to keep clutter out of the Python file that calls it.
 
-
-    :return:
+    :return: None
     """
     print("Transforming data from staging area...")
     engine, session = connect()
