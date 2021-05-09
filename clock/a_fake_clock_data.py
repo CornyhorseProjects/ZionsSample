@@ -100,7 +100,7 @@ class FakeClockData:
         :return: None
         """
         self.date_list = [
-            a.to_pydatetime() for a in list(pd.date_range("2019-01-01", "2020-01-01"))
+            a.to_pydatetime() for a in list(pd.date_range("2019-01-01", "2019-12-31"))
         ]
 
     def generate_timestamps_per_person(self):

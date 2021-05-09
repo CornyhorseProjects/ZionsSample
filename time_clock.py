@@ -30,7 +30,7 @@ Describe the ETL solution.
 
 if __name__ == '__main__':
     # Run this to re-generate fake data:
-    # a_fake_clock_data.main()
+    a_fake_clock_data.main()
 
     b_import_clock_data.main()
     c_transform_clock_data.main()
