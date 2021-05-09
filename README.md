@@ -242,5 +242,13 @@ trivial.
 
 ### Reporting
 While it was not asked, I typically include some basic reporting the first time that I pull 
-data in.  While this is a bit of a contrived example with randomly generated data,
+data in.  While this is a bit of a contrived example with randomly generated data, there are 
+two things that I checked.  At this stage, I'd typically present things like this to someone 
+who has domain knowledge and see if they think it matches with reality and then if they have 
+any questions that we could answer based on the types of data that we have available.
+
+If you are reading this in GitHub you can locate the *clock_in_report.ipynb* and it should 
+print out the findings. Similarly, you can load that notebook and it should show you the 
+results pre-generated. If you have Jupyter Notebooks installed on your system, you may also 
+re-execute them after the database has been built.
 
